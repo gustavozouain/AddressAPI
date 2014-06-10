@@ -1,0 +1,53 @@
+<% 
+Response.Charset="utf-8"
+url = "http://correiosapi.apphb.com/cep/"&request.QueryString("cep")&""
+set xmlhttp = CreateObject("MSXML2.ServerXMLHTTP") 
+    xmlhttp.open "GET", url, false 
+    xmlhttp.send "" 
+    texto = xmlhttp.responseText 
+    set xmlhttp = nothing
+
+if texto = "{""message"":""Endereço não encontado!""}" then
+	Response.Write("Endereço não encontado!")
+	Response.End()
+end if
+
+a=Split(texto,",")
+i=0
+for each x in a
+    if i = 1 then
+		tamanhoX = Len(x)
+		tamanhoX = tamanhoX-19 '"tipoDeLogradouro":
+		variavel = Right(x,tamanhoX)
+		tipoDeLogradouro = Replace(variavel,"""","")
+		Response.Write(tipoDeLogradouro & "<br />")
+	elseif i = 2 then
+		tamanhoX = Len(x)
+		tamanhoX = tamanhoX-13 '"logradouro":
+		variavel = Right(x,tamanhoX)
+		logradouro = Replace(variavel,"""","")
+		Response.Write(logradouro & "<br />")
+	elseif i = 3 then
+		tamanhoX = Len(x)
+		tamanhoX = tamanhoX-9 '"bairro":
+		variavel = Right(x,tamanhoX)
+		bairro = Replace(variavel,"""","")
+		Response.Write(bairro & "<br />")
+	elseif i = 4 then
+		tamanhoX = Len(x)
+		tamanhoX = tamanhoX-9 '"cidade":
+		variavel = Right(x,tamanhoX)
+		cidade = Replace(variavel,"""","")
+		Response.Write(cidade & "<br />")
+	elseif i = 5 then
+		tamanhoX = Len(x)
+		tamanhoX = tamanhoX-9 '"estado":
+		variavel = Right(x,tamanhoX)
+		estado = Replace(variavel,"""","")
+		estado = Replace(estado,"}","")
+		Response.Write(estado & "<br />")
+	end if
+	
+	i=i+1
+next
+%>
